@@ -5,9 +5,22 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
+
 public class News implements Parcelable {
     @SerializedName("text")
     private String text;
+
+    @SerializedName("attachments")
+    private ArrayList<Attachment> attachments;
+
+    public ArrayList<Attachment> getAttachments() {
+        return attachments;
+    }
+
+    public void setAttachments(ArrayList<Attachment> attachments) {
+        this.attachments = attachments;
+    }
 
     public String getText() {
         return text;
@@ -15,6 +28,9 @@ public class News implements Parcelable {
 
     public void setText(String text) {
         this.text = text;
+    }
+
+    public News() {
     }
 
     @Override
@@ -25,16 +41,15 @@ public class News implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.text);
-    }
-
-    public News() {
+        dest.writeTypedList(this.attachments);
     }
 
     protected News(Parcel in) {
         this.text = in.readString();
+        this.attachments = in.createTypedArrayList(Attachment.CREATOR);
     }
 
-    public static final Parcelable.Creator<News> CREATOR = new Parcelable.Creator<News>() {
+    public static final Creator<News> CREATOR = new Creator<News>() {
         @Override
         public News createFromParcel(Parcel source) {
             return new News(source);

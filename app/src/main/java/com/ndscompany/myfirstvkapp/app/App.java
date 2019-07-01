@@ -1,7 +1,9 @@
 package com.ndscompany.myfirstvkapp.app;
 
 import android.app.Application;
+import android.support.multidex.MultiDexApplication;
 
+import com.facebook.drawee.backends.pipeline.Fresco;
 import com.google.gson.Gson;
 import com.ndscompany.myfirstvkapp.repository.IWallRepository;
 import com.ndscompany.myfirstvkapp.repository.WallApiRepository;
@@ -11,7 +13,7 @@ import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class App extends Application {
+public class App extends MultiDexApplication {
     private static App mIstance;
     private IWallRepository wallApiRepository;
     private Retrofit mRetrofit;
@@ -20,6 +22,7 @@ public class App extends Application {
     public void onCreate() {
         super.onCreate();
         mIstance = this;
+        Fresco.initialize(this);
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
         interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
 
