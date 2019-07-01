@@ -7,14 +7,22 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.ndscompany.myfirstvkapp.classes.News;
+
 import java.util.ArrayList;
 
 public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsViewHolder> {
 
-    private ArrayList<String> news;
+    private ArrayList<News> news;
 
-    public NewsAdapter(ArrayList<String> news) {
+
+    public NewsAdapter() {
+        this.news = new ArrayList<>();
+    }
+
+    public void setNews(ArrayList<News> news){
         this.news = news;
+        notifyDataSetChanged();
     }
 
     @NonNull
@@ -28,7 +36,7 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull NewsViewHolder newsViewHolder, int position) {
-        newsViewHolder.tvNew.setText(news.get(position));
+        newsViewHolder.tvNew.setText(news.get(position).getText());
     }
 
     @Override
