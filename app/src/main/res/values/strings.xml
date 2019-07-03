@@ -1,3 +1,4 @@
 <resources>
-    <string name="app_name">MyFirstVkApp</string>
+    <string name="app_name">VkSampleApp</string>
+    <string name="activity_title">VkSampleAppChanged</string>
 </resources>

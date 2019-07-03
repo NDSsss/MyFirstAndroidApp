@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         tvTollBarTitle = findViewById(R.id.tv_activity_base_title);
-        tvTollBarTitle.setText(R.string.app_name);
+        tvTollBarTitle.setText(R.string.activity_title);
         appBarLayout = findViewById(R.id.app_bar_layout);
         tvTollBarTitle.setOnClickListener(new View.OnClickListener() {
             @Override
