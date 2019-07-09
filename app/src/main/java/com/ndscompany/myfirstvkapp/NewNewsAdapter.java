@@ -7,14 +7,23 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.facebook.drawee.view.SimpleDraweeView;
+import com.ndscompany.myfirstvkapp.data.PhotoSize;
+import com.ndscompany.myfirstvkapp.data.VkResponseItem;
+
 import java.util.ArrayList;
 
-public class NewNewsAdapter extends RecyclerView.Adapter<NewNewsAdapter.NewNewsViewHolder>{
+public class NewNewsAdapter extends RecyclerView.Adapter<NewNewsAdapter.NewNewsViewHolder> {
 
-    private ArrayList<String> news;
+    private ArrayList<VkResponseItem> news;
 
-    public NewNewsAdapter(ArrayList<String> news){
-        this.news = news;
+    public NewNewsAdapter() {
+        this.news = new ArrayList<>();
+    }
+
+    public void addNews(ArrayList<VkResponseItem> news) {
+        this.news.addAll(news);
+        notifyDataSetChanged();
     }
 
     @NonNull
@@ -27,24 +36,49 @@ public class NewNewsAdapter extends RecyclerView.Adapter<NewNewsAdapter.NewNewsV
 
     @Override
     public void onBindViewHolder(@NonNull NewNewsViewHolder newNewsViewHolder, int position) {
-        newNewsViewHolder.tvNumber.setText(String.valueOf(position+1));
-        newNewsViewHolder.tvNews.setText(news.get(position));
+        newNewsViewHolder.tvNumber.setText(String.valueOf(position + 1));
+        newNewsViewHolder.tvNews.setText(news.get(position).getNewsText());
+        VkResponseItem item = news.get(position);
+        if (item.getAttachments() != null
+                && item.getAttachments().get(0).getType().equalsIgnoreCase("photo")) {
+            ArrayList<PhotoSize> sizes = item.getAttachments().get(0).getPhoto().getSizes();
+            for (int i = 0; i < sizes.size(); i++) {
+                PhotoSize photoSize = sizes.get(i);
+                if (photoSize.getType().equalsIgnoreCase("x")) {
+                    newNewsViewHolder.sdwImage.setImageURI(photoSize.getUrl());
+                }
+            }
+        } else if (item.getAttachments() != null
+                && item.getAttachments().get(0).getType().equalsIgnoreCase("album")) {
+            ArrayList<PhotoSize> sizes = item.getAttachments().get(0).getAlbum().getThumb().getSizes();
+            for (int i = 0; i < sizes.size(); i++) {
+                PhotoSize photoSize = sizes.get(i);
+                if (photoSize.getType().equalsIgnoreCase("x")) {
+                    newNewsViewHolder.sdwImage.setImageURI(photoSize.getUrl());
+                }
+            }
+        } else {
+            newNewsViewHolder.sdwImage.setVisibility(View.GONE);
+        }
     }
+
 
     @Override
     public int getItemCount() {
         return news.size();
     }
 
-    class NewNewsViewHolder extends RecyclerView.ViewHolder{
+    class NewNewsViewHolder extends RecyclerView.ViewHolder {
 
         TextView tvNews;
         TextView tvNumber;
+        SimpleDraweeView sdwImage;
 
         public NewNewsViewHolder(@NonNull View itemView) {
             super(itemView);
             tvNews = itemView.findViewById(R.id.tv_item_news);
             tvNumber = itemView.findViewById(R.id.tv_item_news_news_count);
+            sdwImage = itemView.findViewById(R.id.item_news_sdw_image);
         }
     }
 }
