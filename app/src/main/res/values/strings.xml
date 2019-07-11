@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">MyFirstVkApp</string>
+    <string name="custom_menu_item">Новая группа</string>
 </resources>

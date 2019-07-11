@@ -22,7 +22,7 @@ public class NewNewsAdapter extends RecyclerView.Adapter<NewNewsAdapter.NewNewsV
     }
 
     public void addNews(ArrayList<VkResponseItem> news) {
-        this.news.addAll(news);
+        this.news = news;
         notifyDataSetChanged();
     }
 

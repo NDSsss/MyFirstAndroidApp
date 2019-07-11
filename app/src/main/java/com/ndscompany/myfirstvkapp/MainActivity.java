@@ -1,10 +1,17 @@
 package com.ndscompany.myfirstvkapp;
 
+import android.content.DialogInterface;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
@@ -24,9 +31,12 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static final String GROUP_NAME = "GROUP_NAME";
+
     private RecyclerView rvNews;
     private NewNewsAdapter adapter;
     private Retrofit retrofit;
+    private String groupName = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,13 +56,68 @@ public class MainActivity extends AppCompatActivity {
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         rvNews.setLayoutManager(linearLayoutManager);
         rvNews.setAdapter(adapter);
-        getNews();
+        loadGroupName();
+        getNews(groupName);
     }
 
-    private void getNews(){
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.menu_custom_group:
+                openCustomGroupDialog();
+                return true;
+            case R.id.menu_custom_group_2:
+                Toast.makeText(this, "menu item 2", Toast.LENGTH_LONG).show();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void saveGrpoupName(String newGroupName){
+        getPreferences(MODE_PRIVATE).edit().putString(GROUP_NAME, newGroupName).apply();
+    }
+
+    private void loadGroupName(){
+        groupName = getPreferences(MODE_PRIVATE).getString(GROUP_NAME, "pikabu");
+    }
+
+    private void openCustomGroupDialog(){
+        View view = LayoutInflater.from(this).inflate(R.layout.dialog_custom_group, null, false);
+        final EditText etGrpoup = view.findViewById(R.id.dialog_custom_group_et_group);
+        new AlertDialog.Builder(this)
+                .setView(view)
+                .setTitle("Добавьте название группы")
+                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        groupName = etGrpoup.getText().toString();
+                        getNews(groupName);
+                        saveGrpoupName(groupName);
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                })
+                .setNeutralButton("DK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                }).show();
+    }
+
+    private void getNews(String newGropName){
         LinkedHashMap<String, String> map = new LinkedHashMap<>();
-        map.put("owner_id", "-154090709");
-        map.put("domain", "kimkfu");
+        map.put("domain", newGropName);
         map.put("count", "10");
         map.put("filter", "owner");
         map.put("extended", "0");
